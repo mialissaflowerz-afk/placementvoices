@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Review Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for animations and specific UI elements */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styling for the range slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Radio button card styling */
+        .radio-card input[type="radio"]:checked + div {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .radio-card input[type="radio"]:checked + div .radio-icon {
+            color: #3b82f6;
+        }
+        
+        /* Modal styling */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#10b981',
+                        danger: '#ef4444',
+                        dark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+        formspree('initForm', { formElement: '#contact-form', formId: 'maqrolrb' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Safety Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer h-full py-2" onclick="showFeed()" title="Back to Feed">
+                <img src="1 (2).png" alt="Girls Like Us Logo" class="h-full object-contain">
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="showContact()" class="text-gray-500 hover:text-gray-700 font-medium py-2 px-3 rounded-full transition-all text-sm hidden sm:flex items-center gap-2" id="nav-contact">
+                    <i class="fa-solid fa-envelope"></i> Contact Us
+                </button>
+                <button onclick="showForm()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-2 px-4 rounded-full transition-all text-sm flex items-center gap-2 hidden" id="nav-write-review">
+                    <i class="fa-solid fa-pen"></i> <span class="hidden sm:inline">Write Review</span>
+                </button>
+                <!-- Quick Exit Button -->
+                <button onclick="quickExit()" class="bg-danger hover:bg-red-700 text-white font-bold py-2 px-3 sm:px-4 rounded-full shadow-lg transition-all flex items-center gap-2 text-sm" title="Quickly hide this page (Esc)">
+                    <i class="fa-solid fa-person-running"></i>
+                    <span class="hidden sm:inline">Quick Exit</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-blue-900 text-white w-full py-3 px-4 shadow-inner">
+        <div class="max-w-4xl mx-auto flex items-start sm:items-center gap-3 text-sm">
+            <i class="fa-solid fa-hand-holding-heart text-blue-300 mt-1 sm:mt-0 text-lg"></i>
+            <p>
+                <strong>Important Note:</strong> We are the makers of this app and individuals with lived experience. <strong>We are NOT professionals or mandated reporters.</strong> If you contact us for help, we can only offer advice based on our own past experiences in the system.
+            </p>
+        </div>
+    </div>
+
+    <main class="flex-grow flex flex-col items-center py-8 px-4 sm:px-6 w-full">
+        
+        <!-- Social Media Feed View (Default) -->
+        <div id="feed-view" class="w-full max-w-2xl flex flex-col gap-6 fade-in">
+            <div class="flex justify-between items-end border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-3xl font-black text-gray-800 tracking-tight">Recent Voices</h2>
+                    <p class="text-gray-500 text-sm mt-1">Anonymous reviews from foster youth.</p>
+                </div>
+                <button onclick="showForm()" class="bg-primary hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-full shadow-md transition-all text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">New Review</span>
+                </button>
+            </div>
+            
+            <div id="feed-container" class="space-y-4">
+                <!-- Cards injected via JS -->
+            </div>
+        </div>
+
+        <!-- Contact View (Hidden initially) -->
+        <div id="contact-view" class="w-full max-w-2xl flex flex-col items-center hidden fade-in">
+            <div class="w-full bg-white rounded-2xl shadow-xl overflow-hidden p-6 sm:p-10 relative">
+                <div class="absolute top-4 right-4">
+                    <button onclick="showFeed()" class="text-gray-400 hover:text-gray-600 p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                
+                <h2 class="text-3xl font-black text-gray-800 tracking-tight mb-2">Get in Touch</h2>
+                <p class="text-gray-500 text-sm mb-8">Have questions or need peer advice? Reach out to us below.</p>
+
+                <div data-fs-success class="hidden mb-6 bg-green-50 text-green-700 p-4 rounded-lg border border-green-200 flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-xl"></i>
+                    <p><strong>Message sent successfully!</strong> We will get back to you soon.</p>
+                </div>
+
+                <div data-fs-error class="hidden mb-6 bg-red-50 text-red-700 p-4 rounded-lg border border-red-200">
+                    <p>There was an error submitting the form. Please try again.</p>
+                </div>
+
+                <form id="contact-form" class="space-y-5">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name (Optional)</label>
+                        <input type="text" id="name" name="name" data-fs-field class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address <span class="text-red-500">*</span></label>
+                        <input type="email" id="email" name="email" required data-fs-field class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-red-500">
+                        <span data-fs-error="email" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message <span class="text-red-500">*</span></label>
+                        <textarea id="message" name="message" rows="5" required data-fs-field class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-red-500" placeholder="How can we help?"></textarea>
+                        <span data-fs-error="message" class="text-red-500 text-xs mt-1 block"></span>
+                    </div>
+
+                    <button type="submit" data-fs-submit-btn class="w-full bg-dark hover:bg-black text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Send Message <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Form View (Hidden initially) -->
+        <div id="form-view" class="w-full max-w-3xl flex flex-col items-center hidden">
+            <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl overflow-hidden fade-in relative" id="app-container">
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 h-2 absolute top-0 left-0" id="progress-container" style="display: none;">
+                    <div class="bg-primary h-2 transition-all duration-300" id="progress-bar" style="width: 0%"></div>
+                </div>
+
+                <div class="p-6 sm:p-10 w-full" id="form-content">
+                    <!-- Content will be dynamically loaded here by JS -->
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-between items-center" id="nav-buttons" style="display: none;">
+                    <button id="prev-btn" onclick="prevStep()" class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 invisible">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </button>
+                    <div class="flex gap-2">
+                        <button id="skip-btn" onclick="skipSection()" class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded transition-colors hidden">
+                            Skip Section
+                        </button>
+                        <button id="next-btn" onclick="nextStep()" class="bg-primary hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg shadow transition-colors flex items-center gap-2">
+                            Next <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Safety Warning Notice (Always visible below form) -->
+            <div class="max-w-3xl w-full mt-6 text-sm text-gray-500 text-center bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <p><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i> <strong>Confidentiality Notice:</strong> Your responses are completely anonymous. We use past tense to protect those currently in placement. However, please be advised that if you are rating a foster home and were their very first placed youth, true anonymity may be difficult to guarantee due to the nature of their records.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
+            <p>&copy; 2026 Girls Like Us. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Custom Modal for Alerts/Messages -->
+    <div id="message-modal" class="fixed inset-0 modal-overlay z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 transform transition-all">
+            <div class="text-center">
+                <div id="modal-icon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                    <i class="fa-solid fa-info text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Notification</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500" id="modal-message">Message text goes here.</p>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-6">
+                <button type="button" onclick="closeModal()" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:text-sm">
+                    Understood
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let currentStep = 0;
+        let formData = {};
+        
+        let mockReviews = [
+            {
+                id: 1,
+                placementName: "Jane & John Smith",
+                placementType: "foster_home",
+                city: "Sacramento",
+                state: "CA",
+                overallScore: 8.5,
+                date: "2 hours ago",
+                snippet: "Felt very safe and they respected my boundaries. They were accommodating with extracurriculars."
+            },
+            {
+                id: 2,
+                placementName: "Oakridge Group Home",
+                placementType: "group_home",
+                city: "Los Angeles",
+                state: "CA",
+                overallScore: 4.2,
+                date: "1 day ago",
+                snippet: "High staff turnover made it hard to build trust. Food was okay, but clothes didn't fit right."
+            },
+            {
+                id: 3,
+                placementName: "Maria Garcia",
+                placementType: "foster_home",
+                city: "San Diego",
+                state: "CA",
+                overallScore: 9.8,
+                date: "3 days ago",
+                snippet: "Amazing placement. I was allowed to go to school every day and felt truly cared for."
+            },
+             {
+                id: 4,
+                placementName: "Valley Youth Hall",
+                placementType: "juvenile_hall",
+                city: "Fresno",
+                state: "CA",
+                overallScore: 3.5,
+                date: "1 week ago",
+                snippet: "Safety was a major concern due to other youth. Basic needs were met but very little autonomy."
+            }
+        ];
+
+        // Define the questionnaire structure
+        const sections = [
+            {
+                id: 'intro',
+                title: 'Welcome to PlacementVoices',
+                type: 'info',
+                content: `
+                    <div class="text-center space-y-6">
+                        <div class="inline-block p-4 rounded-full bg-blue-50 text-primary mb-4">
+                            <i class="fa-solid fa-bullhorn text-4xl"></i>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Your Voice Matters.</h2>
+                        <p class="text-gray-600 text-lg max-w-xl mx-auto">
+                            This secure, anonymous platform allows foster youth to review their placements. Your honest feedback helps improve the system for everyone.
+                        </p>
+                        
+                        <div class="bg-gray-50 rounded-xl p-6 text-left space-y-4 max-w-xl mx-auto border border-gray-100">
+                            <h3 class="font-semibold text-gray-800"><i class="fa-solid fa-lock text-gray-500 mr-2"></i> About Anonymity & Safety</h3>
+                            <ul class="text-sm text-gray-600 space-y-3 list-disc pl-5">
+                                <li><strong>Past Tense:</strong> We use past tense ("I was", "It was") for all questions. You can review a placement even if you are currently there.</li>
+                                <li><strong>No Names (Mostly):</strong> We don't ask for your name.</li>
+                                <li><strong class="text-amber-600">Important Note:</strong> If you are rating a foster home where you were their <em>first ever</em> foster youth, they might figure out it was you. Please keep this in mind.</li>
+                            </ul>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500 italic mt-8">
+                            Click 'Next' to begin. You can review Placements, Social Workers, or Attorneys.
+                        </p>
+                    </div>
+                `
+            },
+            {
+                id: 'review_type',
+                title: 'What would you like to review today?',
+                type: 'radio_cards',
+                field: 'reviewType',
+                options: [
+                    { value: 'placement', label: 'A Placement', icon: 'fa-house', desc: 'Foster home, group home, or juvenile hall' },
+                    { value: 'social_worker', label: 'A Social Worker', icon: 'fa-clipboard-user', desc: 'Rate your experience with a specific social worker' },
+                    { value: 'attorney', label: 'An Attorney', icon: 'fa-scale-balanced', desc: 'Rate your court-appointed attorney' }
+                ]
+            }
+        ];
+
+        // Placement specific questions
+        const placementQuestions = [
+            {
+                id: 'location',
+                title: 'Placement Location',
+                subtitle: 'Please provide general location details to help us organize reviews.',
+                type: 'location_inputs'
+            },
+            {
+                id: 'placement_type',
+                title: 'Type of Placement',
+                type: 'radio_cards_small',
+                field: 'placementType',
+                options: [
+                    { value: 'foster_home', label: 'Foster Home', icon: 'fa-house-chimney-user' },
+                    { value: 'group_home', label: 'Group Home', icon: 'fa-users' },
+                    { value: 'juvenile_hall', label: 'Juvenile Hall', icon: 'fa-building-shield' },
+                    { value: 'other', label: 'Other', icon: 'fa-circle-question' }
+                ],
+                conditionalNext: {
+                    'foster_home': 'foster_home_names'
+                }
+            },
+            {
+                id: 'foster_home_names',
+                title: 'Foster Parent Details',
+                subtitle: 'If this was a foster home, please provide their names (optional but helpful).',
+                type: 'text_inputs',
+                fields: [
+                    { id: 'fosterParent1', label: 'Foster Parent 1 (First & Last Name)', placeholder: 'e.g., Jane Doe' },
+                    { id: 'fosterParent2', label: 'Foster Parent 2 (First & Last Name)', placeholder: 'e.g., John Doe' }
+                ],
+                condition: (data) => data.placementType === 'foster_home'
+            },
+            {
+                id: 'safety_1',
+                title: 'Safety & Trust',
+                type: 'rating_scale',
+                field: 'rating_safe',
+                label: 'On a scale of 1-10, I felt safe in this placement at all times.'
+            },
+            {
+                id: 'safety_2',
+                title: 'Safety Concerns',
+                type: 'rating_scale',
+                field: 'rating_safety_youth',
+                label: 'The biggest issue of safety was other youth in this placement.',
+                scaleLabels: { 1: 'Strongly Disagree', 10: 'Strongly Agree' }
+            },
+            {
+                id: 'trust_1',
+                title: 'Care & Trust',
+                type: 'rating_scale',
+                field: 'rating_cared_for',
+                label: 'I felt cared for by at least one immediate adult.'
+            },
+            {
+                id: 'trust_2',
+                title: 'Care & Trust',
+                type: 'rating_scale',
+                field: 'rating_trusted_staff_parent',
+                label: 'I had at least one staff member (or foster parent) that I could trust.'
+            },
+            {
+                id: 'trust_3',
+                title: 'Foster Parent Specific',
+                type: 'rating_scale',
+                field: 'rating_trusted_parents',
+                label: 'I trusted my foster parent(s).',
+                condition: (data) => data.placementType === 'foster_home'
+            },
+            {
+                id: 'respect',
+                title: 'Respect',
+                type: 'rating_scale',
+                field: 'rating_respect',
+                label: 'I was treated with respect by my foster parent(s) / staff.'
+            },
+            {
+                id: 'wellbeing_1',
+                title: 'Daily Life & Needs',
+                type: 'rating_scale',
+                field: 'rating_school',
+                label: 'I was allowed to go to school every day. (There was never a day when you wanted to go to school and someone wouldn\'t let you).'
+            },
+            {
+                id: 'wellbeing_2',
+                title: 'Daily Life & Needs',
+                type: 'rating_scale',
+                field: 'rating_activities',
+                label: 'I was allowed to do extracurricular activities (e.g., sports team, band, art class - didn\'t have to be school related).'
+            },
+            {
+                id: 'wellbeing_3',
+                title: 'Basic Needs',
+                type: 'rating_scale',
+                field: 'rating_clothes',
+                label: 'I had clothes and shoes that were clean and fit me right.'
+            },
+            {
+                id: 'wellbeing_4',
+                title: 'Basic Needs',
+                type: 'rating_scale',
+                field: 'rating_food',
+                label: 'I was properly fed / I never went hungry.'
+            },
+            {
+                id: 'wellbeing_5',
+                title: 'Autonomy',
+                type: 'rating_scale',
+                field: 'rating_autonomy',
+                label: 'I was not forced to participate in anything I didn\'t want to, unless it was a necessity (dentist, doctor, therapist, school).'
+            },
+            {
+                id: 'holidays',
+                title: 'Holidays & Celebrations',
+                subtitle: 'If you were not there for any holidays/birthdays, you can skip this.',
+                type: 'rating_scale',
+                field: 'rating_holidays',
+                label: 'Holidays and Birthdays were celebrated normally. I was treated fairly and with kindness, and if my religion had different holidays, we celebrated them my way as well.',
+                skippable: true
+            },
+            {
+                id: 'placement_final',
+                title: 'Final Thoughts',
+                type: 'textarea',
+                field: 'placement_comments',
+                label: 'Is there anything else you want to share about this placement? (Remember, do not include your own name).'
+            }
+        ];
+
+        // Professional specific questions (Social Worker / Attorney)
+        const professionalQuestions = [
+            {
+                id: 'prof_details',
+                title: 'Professional Details',
+                subtitle: 'Please provide info about the person you are reviewing.',
+                type: 'text_inputs',
+                fields: [
+                    { id: 'prof_firstName', label: 'First Name (if known)', placeholder: '' },
+                    { id: 'prof_lastName', label: 'Last Name', placeholder: 'Required' },
+                    { id: 'prof_county', label: 'County they work in', placeholder: 'e.g., Los Angeles County' }
+                ]
+            },
+            {
+                id: 'prof_rating_1',
+                title: 'Communication',
+                type: 'rating_scale',
+                field: 'rating_prof_communication',
+                label: 'They listened to me and considered what I wanted.',
+                scaleLabels: { 1: 'Never', 10: 'Always' }
+            },
+            {
+                id: 'prof_rating_2',
+                title: 'Reliability',
+                type: 'rating_scale',
+                field: 'rating_prof_reliable',
+                label: 'They returned my calls/messages and showed up when they said they would.',
+                scaleLabels: { 1: 'Never', 10: 'Always' }
+            },
+            {
+                id: 'prof_rating_3',
+                title: 'Advocacy',
+                type: 'rating_scale',
+                field: 'rating_prof_advocacy',
+                label: 'I felt like they were fighting for my best interests.',
+                scaleLabels: { 1: 'Strongly Disagree', 10: 'Strongly Agree' }
+            },
+             {
+                id: 'prof_final',
+                title: 'Final Thoughts',
+                type: 'textarea',
+                field: 'prof_comments',
+                label: 'Any specific comments about this person? (Keep it anonymous).'
+            }
+        ];
+
+        let activeFlow = sections; // Starts with base sections
+
+        function showFeed() {
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById('contact-view').classList.add('hidden');
+            document.getElementById('feed-view').classList.remove('hidden');
+            document.getElementById('nav-write-review').classList.remove('hidden');
+            document.getElementById('nav-contact').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function showContact() {
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById('feed-view').classList.add('hidden');
+            document.getElementById('contact-view').classList.remove('hidden');
+            document.getElementById('nav-write-review').classList.remove('hidden');
+            document.getElementById('nav-contact').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showForm() {
+            // Ensure form structural elements exist (reset if coming from success screen)
+            const appContainer = document.getElementById('app-container');
+            if (!document.getElementById('form-content')) {
+                appContainer.innerHTML = `
+                    <div class="w-full bg-gray-200 h-2 absolute top-0 left-0" id="progress-container" style="display: none;">
+                        <div class="bg-primary h-2 transition-all duration-300" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="p-6 sm:p-10 w-full" id="form-content"></div>
+                    <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-between items-center" id="nav-buttons" style="display: none;">
+                        <button id="prev-btn" onclick="prevStep()" class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded transition-colors flex items-center gap-2 invisible">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <div class="flex gap-2">
+                            <button id="skip-btn" onclick="skipSection()" class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded transition-colors hidden">
+                                Skip Section
+                            </button>
+                            <button id="next-btn" onclick="nextStep()" class="bg-primary hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg shadow transition-colors flex items-center gap-2">
+                                Next <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                currentStep = 0;
+                formData = {};
+                activeFlow = sections;
+                renderStep();
+            }
+            
+            document.getElementById('feed-view').classList.add('hidden');
+            document.getElementById('contact-view').classList.add('hidden');
+            document.getElementById('form-view').classList.remove('hidden');
+            document.getElementById('nav-write-review').classList.add('hidden');
+            document.getElementById('nav-contact').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getPlacementIcon(type) {
+            switch(type) {
+                case 'foster_home': return '<i class="fa-solid fa-house-chimney-user text-purple-500 bg-purple-100 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+                case 'group_home': return '<i class="fa-solid fa-users text-blue-500 bg-blue-100 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+                case 'juvenile_hall': return '<i class="fa-solid fa-building-shield text-gray-500 bg-gray-200 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+                case 'social_worker': return '<i class="fa-solid fa-clipboard-user text-green-500 bg-green-100 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+                case 'attorney': return '<i class="fa-solid fa-scale-balanced text-amber-500 bg-amber-100 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+                default: return '<i class="fa-solid fa-house text-gray-500 bg-gray-100 w-12 h-12 flex items-center justify-center rounded-full text-xl shadow-sm"></i>';
+            }
+        }
+
+        function getScoreColor(score) {
+            if (score >= 7.5) return 'text-green-600 bg-green-50 border-green-200';
+            if (score >= 4.5) return 'text-amber-600 bg-amber-50 border-amber-200';
+            return 'text-red-600 bg-red-50 border-red-200';
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            let html = '';
+
+            mockReviews.forEach(review => {
+                const scoreColorClass = getScoreColor(review.overallScore);
+                const formattedType = review.placementType ? review.placementType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Placement';
+
+                html += `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow relative">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-4">
+                                ${getPlacementIcon(review.placementType)}
+                                <div>
+                                    <h3 class="font-bold text-gray-900 text-lg leading-tight">${review.placementName}</h3>
+                                    <div class="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                                        <span><i class="fa-solid fa-location-dot mr-1 text-gray-400"></i>${review.city}, ${review.state}</span>
+                                        <span>•</span>
+                                        <span class="font-medium">${formattedType}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Score Badge -->
+                            <div class="flex flex-col items-center justify-center px-3 py-2 rounded-xl border-2 ${scoreColorClass} min-w-[70px] bg-white shadow-sm">
+                                <span class="text-3xl font-black leading-none">${review.overallScore.toFixed(1)}</span>
+                                <span class="text-[9px] font-bold uppercase tracking-widest mt-1 opacity-70">Score</span>
+                            </div>
+                        </div>
+                        
+                        ${review.snippet ? `
+                            <div class="mt-4 bg-gray-50 rounded-xl p-4 text-sm text-gray-700 border-l-4 border-gray-300">
+                                "${review.snippet}"
+                            </div>
+                        ` : ''}
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400 font-medium">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock"></i> ${review.date}</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-user-ninja"></i> Anonymous Youth</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderStep() {
+            const step = activeFlow[currentStep];
+            const contentDiv = document.getElementById('form-content');
+            
+            // Check conditions to see if we should skip this step
+            if (step.condition && !step.condition(formData)) {
+                if (currentStep < activeFlow.length - 1) {
+                    currentStep++;
+                    renderStep();
+                }
+                return;
+            }
+
+            // Update Progress Bar
+            const progressContainer = document.getElementById('progress-container');
+            const navButtons = document.getElementById('nav-buttons');
+            
+            if (currentStep === 0) {
+                progressContainer.style.display = 'none';
+                navButtons.style.display = 'flex';
+                document.getElementById('prev-btn').classList.add('invisible');
+            } else {
+                progressContainer.style.display = 'block';
+                navButtons.style.display = 'flex';
+                document.getElementById('prev-btn').classList.remove('invisible');
+                
+                const progress = ((currentStep) / (activeFlow.length - 1)) * 100;
+                document.getElementById('progress-bar').style.width = `${progress}%`;
+            }
+
+            // Handle Skip Button visibility
+            const skipBtn = document.getElementById('skip-btn');
+            if (step.skippable) {
+                skipBtn.classList.remove('hidden');
+            } else {
+                skipBtn.classList.add('hidden');
+            }
+
+            // Change Next button to Submit on last step
+            const nextBtn = document.getElementById('next-btn');
+            if (currentStep === activeFlow.length - 1) {
+                nextBtn.innerHTML = 'Submit Review <i class="fa-solid fa-check"></i>';
+                nextBtn.classList.remove('bg-primary', 'hover:bg-blue-600');
+                nextBtn.classList.add('bg-secondary', 'hover:bg-green-600');
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fa-solid fa-arrow-right"></i>';
+                nextBtn.classList.add('bg-primary', 'hover:bg-blue-600');
+                nextBtn.classList.remove('bg-secondary', 'hover:bg-green-600');
+            }
+
+            // Render HTML based on step type
+            let html = `
+                <div class="fade-in">
+                    ${step.title ? `<h2 class="text-2xl font-bold text-gray-800 mb-2">${step.title}</h2>` : ''}
+                    ${step.subtitle ? `<p class="text-gray-500 mb-6">${step.subtitle}</p>` : ''}
+            `;
+
+            switch(step.type) {
+                case 'info':
+                    html += step.content;
+                    break;
+                
+                case 'radio_cards':
+                case 'radio_cards_small':
+                    html += `<div class="${step.type === 'radio_cards' ? 'grid sm:grid-cols-3 gap-4' : 'grid grid-cols-2 sm:grid-cols-4 gap-3'}">`;
+                    step.options.forEach(opt => {
+                        const isChecked = formData[step.field] === opt.value ? 'checked' : '';
+                        html += `
+                            <label class="radio-card cursor-pointer relative">
+                                <input type="radio" name="${step.field}" value="${opt.value}" class="peer sr-only" onchange="saveData('${step.field}', '${opt.value}')" ${isChecked}>
+                                <div class="rounded-xl border-2 border-gray-200 p-4 hover:border-blue-200 transition-all h-full flex flex-col items-center justify-center text-center">
+                                    <i class="fa-solid ${opt.icon} text-3xl text-gray-400 radio-icon mb-3 transition-colors"></i>
+                                    <span class="font-semibold text-gray-700 block">${opt.label}</span>
+                                    ${opt.desc && step.type === 'radio_cards' ? `<span class="text-xs text-gray-500 mt-2 block">${opt.desc}</span>` : ''}
+                                </div>
+                            </label>
+                        `;
+                    });
+                    html += `</div>`;
+                    break;
+
+                case 'location_inputs':
+                    html += `
+                        <div class="space-y-4 max-w-md mx-auto">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <input type="text" id="loc_city" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" value="${formData['city'] || ''}" onchange="saveData('city', this.value)">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                                    <select id="loc_state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-white" onchange="saveData('state', this.value)">
+                                        <option value="">Select State</option>
+                                        <option value="AL" ${formData['state']==='AL'?'selected':''}>Alabama</option>
+                                        <option value="CA" ${formData['state']==='CA'?'selected':''}>California</option>
+                                        <option value="NY" ${formData['state']==='NY'?'selected':''}>New York</option>
+                                        <option value="TX" ${formData['state']==='TX'?'selected':''}>Texas</option>
+                                        <option value="WA" ${formData['state']==='WA'?'selected':''}>Washington</option>
+                                        <option value="OTHER" ${formData['state']==='OTHER'?'selected':''}>Other</option>
+                                        <!-- Add full list in real app -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
+                                    <input type="text" id="loc_zip" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" value="${formData['zip'] || ''}" onchange="saveData('zip', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'text_inputs':
+                    html += `<div class="space-y-4 max-w-md mx-auto">`;
+                    step.fields.forEach(field => {
+                        html += `
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">${field.label}</label>
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="${field.placeholder}" value="${formData[field.id] || ''}" onchange="saveData('${field.id}', this.value)">
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                    break;
+
+                case 'rating_scale':
+                    const currentValue = formData[step.field] || 5;
+                    const labels = step.scaleLabels || { 1: 'Strongly Disagree', 10: 'Strongly Agree' };
+                    html += `
+                        <div class="max-w-2xl mx-auto py-8">
+                            <h3 class="text-xl font-medium text-gray-800 text-center mb-10 leading-relaxed">"${step.label}"</h3>
+                            
+                            <div class="relative pt-1 pb-8">
+                                <input type="range" min="1" max="10" value="${currentValue}" class="w-full" oninput="updateRangeOutput('${step.field}', this.value)">
+                                <div class="flex justify-between text-xs text-gray-500 font-medium px-2 mt-4">
+                                    <span>1<br><span class="hidden sm:inline">${labels[1]}</span></span>
+                                    <span>2</span><span>3</span><span>4</span>
+                                    <span>5<br><span class="hidden sm:inline">Neutral</span></span>
+                                    <span>6</span><span>7</span><span>8</span><span>9</span>
+                                    <span class="text-right">10<br><span class="hidden sm:inline">${labels[10]}</span></span>
+                                </div>
+                                <div class="text-center mt-6">
+                                    <span class="inline-block bg-blue-100 text-blue-800 text-2xl font-bold px-6 py-2 rounded-lg" id="${step.field}_output">${currentValue}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // Ensure initial save if not already in formData
+                    if(!formData[step.field]) saveData(step.field, currentValue);
+                    break;
+                
+                case 'textarea':
+                    html += `
+                        <div class="max-w-2xl mx-auto">
+                            <label class="block text-lg font-medium text-gray-800 mb-4">${step.label}</label>
+                            <textarea rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none" placeholder="Type your experience here..." onchange="saveData('${step.field}', this.value)">${formData[step.field] || ''}</textarea>
+                        </div>
+                    `;
+                    break;
+            }
+
+            html += `</div>`;
+            contentDiv.innerHTML = html;
+        }
+
+        function saveData(key, value) {
+            formData[key] = value;
+            
+            // Dynamic flow building
+            if (key === 'reviewType') {
+                if (value === 'placement') {
+                    activeFlow = [...sections, ...placementQuestions];
+                } else if (value === 'social_worker' || value === 'attorney') {
+                    // Update professional labels based on selection
+                    const flow = JSON.parse(JSON.stringify(professionalQuestions)); // deep copy
+                    const roleLabel = value === 'social_worker' ? 'Social Worker' : 'Attorney';
+                    flow[0].title = `${roleLabel} Details`;
+                    activeFlow = [...sections, ...flow];
+                }
+            }
+        }
+
+        function updateRangeOutput(field, value) {
+            document.getElementById(`${field}_output`).innerText = value;
+            saveData(field, value);
+        }
+
+        function nextStep() {
+            const step = activeFlow[currentStep];
+            
+            // Validation
+            if (step.type.includes('radio') && !formData[step.field]) {
+                showModal('Required', 'Please select an option to continue.', 'fa-circle-exclamation', 'text-amber-500');
+                return;
+            }
+            if (step.id === 'location' && (!formData['city'] || !formData['state'])) {
+                showModal('Required', 'Please provide at least a City and State.', 'fa-circle-exclamation', 'text-amber-500');
+                return;
+            }
+
+            if (currentStep < activeFlow.length - 1) {
+                currentStep++;
+                renderStep();
+            } else {
+                submitForm();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                // Check if we need to skip backwards based on condition
+                const step = activeFlow[currentStep];
+                if (step.condition && !step.condition(formData)) {
+                     prevStep(); // recursively go back if condition not met
+                } else {
+                    renderStep();
+                }
+            }
+        }
+
+        function skipSection() {
+            // Save null or 'skipped' for the current field if applicable
+            const step = activeFlow[currentStep];
+            if(step.field) saveData(step.field, 'skipped');
+            nextStep();
+        }
+
+        function quickExit() {
+            // Immediately replace body content with something innocuous
+            document.body.innerHTML = `
+                <div style="height: 100vh; width: 100vw; display: flex; align-items: center; justify-content: center; font-family: sans-serif;">
+                    <iframe src="https://en.wikipedia.org/wiki/Main_Page" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+            `;
+            // Attempt to replace state so back button doesn't easily go back
+            window.history.replaceState(null, '', 'https://www.google.com');
+        }
+
+        // Keyboard shortcut for Quick Exit (Esc key)
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                quickExit();
+            }
+        });
+
+        function submitForm() {
+            // 1. Calculate Overall Score based on numerical ratings (1-10)
+            let totalScore = 0;
+            let ratingCount = 0;
+            
+            for (const key in formData) {
+                if (key.startsWith('rating_') && !isNaN(formData[key])) {
+                    totalScore += parseInt(formData[key]);
+                    ratingCount++;
+                }
+            }
+            const overallScore = ratingCount > 0 ? (totalScore / ratingCount) : 5.0; // Default if skipped
+
+            // 2. Determine Display Name
+            let placementName = "Unknown";
+            if (formData.placementType === 'foster_home' && formData.fosterParent1) {
+                placementName = formData.fosterParent1 + (formData.fosterParent2 ? ` & ${formData.fosterParent2}` : '');
+            } else if (formData.reviewType === 'social_worker' || formData.reviewType === 'attorney') {
+                placementName = `${formData.prof_firstName || ''} ${formData.prof_lastName || ''}`.trim();
+                if(!placementName) placementName = formData.reviewType === 'social_worker' ? 'Social Worker' : 'Attorney';
+            } else {
+                // For group home/juvenile hall, use City + Type if no name field was provided
+                placementName = `${formData.city || 'Local'} ${formData.placementType ? formData.placementType.replace('_', ' ') : 'Placement'}`;
+                // Capitalize
+                placementName = placementName.replace(/\b\w/g, l => l.toUpperCase());
+            }
+
+            // 3. Create the review object for the feed
+            const newReview = {
+                id: Date.now(),
+                placementName: placementName,
+                placementType: formData.placementType || formData.reviewType,
+                city: formData.city || (formData.prof_county ? formData.prof_county.replace(' County', '') : 'Unknown City'),
+                state: formData.state || 'CA', 
+                overallScore: parseFloat(overallScore.toFixed(1)),
+                date: "Just now",
+                snippet: formData.placement_comments || formData.prof_comments || null
+            };
+
+            // 4. Prepend to our mock data array and re-render feed
+            mockReviews.unshift(newReview);
+            renderFeed();
+            
+            // 5. Show Success Screen
+            document.getElementById('app-container').innerHTML = `
+                <div class="p-10 text-center fade-in space-y-4 py-16">
+                    <div class="inline-flex p-5 rounded-full bg-green-100 text-secondary mb-4 shadow-inner">
+                        <i class="fa-solid fa-check-to-slot text-6xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-gray-800">Review Submitted!</h2>
+                    <p class="text-gray-600 max-w-md mx-auto text-lg">
+                        Thank you for sharing your experience. Your voice helps bring accountability and improves the system for other youth.
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="showFeed()" class="bg-primary hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-list"></i> View Feed
+                        </button>
+                        <button onclick="showForm()" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-3 px-8 rounded-full transition-all border border-gray-200">
+                            Submit Another Review
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Modal Functions
+        function showModal(title, message, iconClass = 'fa-info', iconColor = 'text-blue-600') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            const iconContainer = document.getElementById('modal-icon');
+            iconContainer.innerHTML = `<i class="fa-solid ${iconClass} ${iconColor} text-xl"></i>`;
+            
+            // Adjust background color based on icon color intent
+            if(iconColor.includes('amber')) {
+                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 mb-4';
+            } else if (iconColor.includes('red')) {
+                 iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4';
+            } else {
+                 iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4';
+            }
+
+            document.getElementById('message-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+        }
+
+        // Initialize App
+        window.onload = () => {
+            renderFeed();
+            renderStep(); // Pre-render form in the background
+            
+            // By default, make sure we show the feed and hide other views
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById('contact-view').classList.add('hidden');
+            document.getElementById('feed-view').classList.remove('hidden');
+            document.getElementById('nav-write-review').classList.remove('hidden');
+            document.getElementById('nav-contact').classList.remove('hidden');
+            
+            // Re-initialize Formspree success/error state handling for UI updates
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.target.hasAttribute('data-fs-success') && mutation.target.style.display !== 'none') {
+                        mutation.target.classList.remove('hidden');
+                        document.getElementById('contact-form').reset();
+                        setTimeout(() => {
+                            mutation.target.classList.add('hidden');
+                            mutation.target.removeAttribute('style'); // cleanup inline style added by library
+                        }, 5000);
+                    }
+                     if (mutation.target.hasAttribute('data-fs-error') && mutation.target.style.display !== 'none') {
+                        mutation.target.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            const successDiv = document.querySelector('[data-fs-success]');
+            const errorDiv = document.querySelector('[data-fs-error]');
+            if(successDiv) observer.observe(successDiv, { attributes: true, attributeFilter: ['style'] });
+            if(errorDiv) observer.observe(errorDiv, { attributes: true, attributeFilter: ['style'] });
+        };
+
+    </script>
+</body>
+</html>
